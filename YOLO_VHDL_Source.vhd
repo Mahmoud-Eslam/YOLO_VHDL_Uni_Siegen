@@ -33,7 +33,8 @@ entity YOLO_VHDL_Source is
             stride        :integer := 2
             );
     port(
-        clock : in std_logic;
+        CLK : in std_logic;
+        reset : in std_logic;
         new_img : out float_3d_vector (0 to (pooled_height - 1), 0 to (pooled_width - 1), 0 to (i_filters - 1)) := (others => (others => (others => 0.0)))
         );       
 end YOLO_VHDL_Source;
@@ -178,7 +179,7 @@ constant moving_variance : float_1d_vector :=
  constant epsilon : real := 0.001;   
     
 BEGIN       
-    process (clock)
+    process (CLK, reset)
         
     -- kernels variables
     variable n_i_height : integer := (i_height - k_height) + 1; 
@@ -203,8 +204,9 @@ BEGIN
     variable mw : integer := 0;
     
     begin
-        if(clock' event and clock='1') then
-        
+        if reset ='1' then                          
+        elsif(CLK'event and CLK='1') then
+                                  
             -- perform conv
             for d in 0 to (n_i_depth - 1) loop -- performed only once
                 for h in 0 to (n_i_height - 1) loop
@@ -225,7 +227,6 @@ BEGIN
             end loop;            
             
             -- perform batchNorm 
-        
             for h in 0 to (n_i_height - 1) loop
                 for w in 0 to (n_i_width -1) loop
                     for d in 0 to (k_filters - 1) loop
