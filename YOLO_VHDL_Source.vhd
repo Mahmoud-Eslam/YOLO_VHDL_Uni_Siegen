@@ -206,14 +206,14 @@ BEGIN
         if(clock' event and clock='1') then
         
             -- perform conv
-            for d in 0 to (n_i_depth) loop -- performed only once
-                for h in 0 to (n_i_height) loop
-                    for w in 0 to (n_i_width) loop
-                        for k_f in 0 to (k_filters) loop
+            for d in 0 to (n_i_depth - 1) loop -- performed only once
+                for h in 0 to (n_i_height - 1) loop
+                    for w in 0 to (n_i_width - 1) loop
+                        for k_f in 0 to (k_filters - 1) loop
                             conv_sum := 0.0;
-                            for k_d in 0 to (k_depth) loop
-                                for k_h in 0 to (k_height) loop
-                                    for k_w in 0 to (k_width) loop
+                            for k_d in 0 to (k_depth - 1) loop
+                                for k_h in 0 to (k_height - 1) loop
+                                    for k_w in 0 to (k_width - 1) loop
                                         conv_sum := conv_sum + img((h+ k_h), (w + k_w), (d + k_d)) * kernel(k_h, k_w, k_d, k_f);
                                     end loop;
                                 end loop;
