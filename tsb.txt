@@ -1,0 +1,91 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity tb_DSP_convmax is
+end tb_DSP_convmax;
+
+library work;
+use work.conv_package.all;
+
+architecture tb_architecture of tb_DSP_convmax is
+    signal CLK, reset : std_logic := '0';
+    signal output_tb : output;
+    signal  img: integer_3d_vector := (
+  ( (1, 2, 3, 4), (5, 6, 7, 8), (9, 10, 11, 12), (13, 14, 15, 16) ),
+  ( (17, 18, 19, 20), (21, 22, 23, 24), (25, 26, 27, 28), (29, 30, 31, 32) ),
+  ( (33, 34, 35, 36), (37, 38, 39, 40), (41, 4, 43, 44), (45, 46, 47, 48) )
+);
+signal flt: integer_4d_vector := (
+  ( ( (1, 2, 3),
+      (4, 5, 6),
+      (7, 8, 9) ), -- Depth 0
+
+    ( (10, 11, 12),
+      (13, 14, 15),
+      (16, 17, 18) ), -- Depth 1
+
+    ( (19, 20, 21),
+      (22, 23, 24),
+      (25, 26, 27) ) ),  -- Depth 2
+  
+  ( ( (28, 29, 30),
+      (31, 32, 33),
+      (34, 35, 36) ), -- Depth 0
+
+    ( (37, 38, 39),
+      (40, 41, 42),
+      (43, 44, 45) ), -- Depth 1
+
+    ( (46, 47, 48),
+      (49, 50, 51),
+      (52, 53, 54) ) ) -- Depth 2
+);
+
+begin
+    -- Instantiate the DSP_convmax entity
+    UUT : entity work.DSP_convmax
+        port map (
+            CLK => CLK,
+            reset => reset,
+            img => img,
+            flt => flt,
+            output => output_tb
+            
+            
+        );
+
+    -- Clock process
+    CLK_process: process
+    begin
+        while now < 1000 ns loop
+            CLK <= not CLK;
+            wait for 5 ns;
+        end loop;
+        wait;
+    end process;
+
+    -- Stimulus process
+    stimulus_process: process
+    begin
+        -- Initialize inputs here if needed
+
+        -- Apply reset
+        reset <= '1';
+        wait for 10 ns;
+        reset <= '0';
+
+        -- Wait for some time before applying inputs
+        wait for 10 ns;
+
+        -- Apply test input data here if needed
+
+        -- Wait for some time to observe the output
+        wait for 100 ns;
+
+        -- Add assertions for expected output data here if needed
+
+        wait;
+
+    end process;
+
+end tb_architecture;

@@ -1,0 +1,77 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.NUMERIC_STD.ALL;
+use IEEE.MATH_REAL.ALL;
+
+package conv_package is 
+    type output is array(0 to (1), 0 to (1), 0 to (1)) of integer;    
+    type integer_3d_vector is array(0 to (2), 0 to (3), 0 to (3)) of integer;    
+    type integer_4d_vector is array(0 to (1), 0 to (2), 0 to (2), 0 to (2)) of integer;
+end;
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.NUMERIC_STD.ALL;
+use IEEE.MATH_REAL.ALL;
+
+library work;
+use work.conv_package.all;
+
+entity DSP_convmax is
+
+          port (
+        CLK : in std_logic;
+        reset : in std_logic;
+        flt: in integer_4d_vector;
+        img: in integer_3d_vector;
+        output : out output
+    );
+    attribute use_dsp : string;
+end DSP_convmax;
+
+architecture Behavioral of DSP_convmax is
+     -- Width of each filter   
+    attribute use_dsp of Behavioral : architecture is "yes";  
+
+  --type conv_output is array(0 to FLT_COUNT-1, 0 to (IMG_HEIGHT-FLT_HEIGHT), 0 to (IMG_WIDTH-FLT_WIDTH)) of REAL;
+
+begin
+  process(clk)
+    variable sum : integer;
+   variable IMG_DEPTH   : integer := 3;    -- Depth of the image array
+   variable IMG_HEIGHT  : integer := 4;    -- Height of the image array
+   variable IMG_WIDTH   : integer := 4;    -- Width of the image array
+   variable FLT_COUNT   : integer := 2;    -- Number of filters
+   variable FLT_DEPTH   : integer := 3;    -- Depth of each filter
+   variable FLT_HEIGHT  : integer := 3;    -- Height of each filter
+   variable FLT_WIDTH   : integer := 3;
+
+    begin
+        if reset = '1' then
+            -- Reset condition, initialize output signal
+            output <= (others => (others => (others => 0)));
+        elsif rising_edge(CLK) then
+      sum := 0;
+      for i in 0 to FLT_COUNT-1 loop
+        for j in 0 to (IMG_HEIGHT-FLT_HEIGHT) loop
+          for k in 0 to (IMG_WIDTH-FLT_WIDTH) loop
+            for g in 0 to FLT_DEPTH-1 loop
+              for m in 0 to FLT_HEIGHT-1 loop
+                for n in 0 to FLT_WIDTH-1 loop
+                  sum := sum + (img(g, j + m, k + n) * flt(i, g, m, n));
+                end loop;
+              end loop;
+            end loop;
+            output(i, j, k) <= sum;
+            sum := 0;
+          end loop;
+        end loop;
+      end loop;
+
+        end if;
+  end process;
+end Behavioral;
