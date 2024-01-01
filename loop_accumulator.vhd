@@ -24,8 +24,6 @@ entity Test_update is
 end Test_update;
 
 architecture Behavioral of Test_update is
-signal A : integer := 0;
-signal B : integer := 0;
 
 signal shift_reg_A : my_arr := (others => (others => 0));
 signal shift_reg_B : my_arr := (others => (others => 0));
