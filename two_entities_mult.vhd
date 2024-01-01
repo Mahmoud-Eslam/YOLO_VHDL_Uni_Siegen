@@ -19,7 +19,6 @@ architecture Behavioral of mult_var is
                     if reset = '1' then
                         elsif falling_edge(clk) then
                            c_internal <= A * 1;
-                            report "internal XXXXXXXXXXX: " & integer'image(c_internal);
                            C <= c_internal;       
                     end if;    
             end process;     
@@ -79,7 +78,6 @@ begin
             shift_register_C <= sub_C;
             sum := sum + shift_register_C; 
             result <= sum;     
-            report "sub_C xxxxxxxxxxxxxxXXXXXXXXXXX: " & integer'image(shift_register_C);
         end if;    
     end process;     
 
