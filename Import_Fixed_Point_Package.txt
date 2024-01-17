@@ -1,0 +1,36 @@
+# Download the package from this repository
+https://github.com/peteut/vhdl2008c.git
+
+# Set the current working directory to the location of the VHDL packages files
+cd ./vhdl2008c-master
+
+# Add the files to the project
+add_files -norecurse numeric_std_additions.vhdl
+add_files -norecurse numeric_std_unsigned_c.vhdl
+add_files -norecurse fixed_float_types_c.vhdl
+add_files -norecurse fixed_pkg_c.vhdl
+add_files -norecurse standard_additions_c.vhdl
+add_files -norecurse float_pkg_c.vhdl
+add_files -norecurse math_utility_pkg.vhdl
+add_files -norecurse std_logic_1164_additions.vhdl
+
+# Set the library for these files to "ieee_proposed"
+set_property library ieee_proposed [get_files {numeric_std_additions.vhdl numeric_std_unsigned_c.vhdl fixed_float_types_c.vhdl fixed_pkg_c.vhdl standard_additions_c.vhdl float_pkg_c.vhdl math_utility_pkg.vhdl std_logic_1164_additions.vhdl}]
+
+# Read your design file (replace my_design.vhd with your actual design file)
+read_vhdl -vhdl2008 ./my_design.vhd
+
+# make sure that the Hierarchy update in the Design and Simulation Sources are set to "Automatic Update and Compile order"
+
+# ----------------------------------- You can skip this rest ------------------------------------------------------------
+# Reset the synthesis run
+reset_run synth_1
+
+# Launch the synthesis run
+launch_runs synth_1 -jobs 4
+
+# Wait for the synthesis run to finish
+wait_on_run synth_1
+
+# Open the synthesis run
+open_run synth_1 -name synth_1
